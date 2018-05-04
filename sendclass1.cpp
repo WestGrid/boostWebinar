@@ -1,7 +1,7 @@
 //#############################################################
-// $Source: /home/mann/Dropbox/PJM/research/1/examples/c++11_mpi/basic/RCS/sendclass1.cpp,v $
-// $Revision: 1.2 $
-// $Date: 2018/05/01 20:56:31 $
+// $Source: /home/mann/Dropbox/PJM/research/1/examples/c++11_mpi/boostWebinar2018/RCS/sendclass1.cpp,v $
+// $Revision: 1.1 $
+// $Date: 2018/05/04 16:04:21 $
 /*
   MPI Example: Package up a class and send it off. USES BOOST MPI.
 
@@ -15,7 +15,6 @@
 */
 //##############################################################
 #include <cstdlib>
-//#include <cstring>
 
 #include <sstream>
 #include <iostream>
@@ -30,8 +29,7 @@ const string PROGRAM = "sendclass1";
 
 //==============================================================
 // Simple class containing a few data items
-// -has a method "Serialize()" (shades of Java) used
-//  to send it over an MPI connection
+// Includes serialize (from Boost template)
 
 class TestClass
 {
@@ -45,13 +43,6 @@ public:
   TestClass( int i_in, double a_in, string desc_in ) :
      i(i_in), a(a_in), desc(desc_in) {}
 
-  TestClass( string serial_string ){
-	  //##cout << "TestClass: got string \"" << serial_string << "\"\n";
-	  stringstream s( serial_string );
-	  //##cout << "TestClass: reading from stringstream s.\n";
-	  s >> i >> a;
-	  getline(s, desc);  // just assumes the rest of the line is the desc.
-  }
   ~TestClass(){}
 
   friend class boost::serialization::access;
@@ -128,7 +119,6 @@ int main(int argc, char *argv[])
 
   } else if( rank == receiver ){
     ofstream s( receiver_filename.str().c_str() );
-    int n;
     s << "sendclass1 " << rank << ": receiver started.  Waiting for message." << endl;
 
     std::vector<TestClass> treceive;
